@@ -34,10 +34,11 @@ class CarsController extends Controller
 
         $validated['price'] = $validated['price'] ?? 0;
 
-        if ($request->hasFile('car_photo')) {
-            $uploadedUrl = Cloudinary::upload($request->file('car_photo')->getRealPath())->getSecurePath();
-            $validated['car_photo'] = $uploadedUrl;
-        }
+        $uploaded = Cloudinary::upload($request->file('car_photo')->getRealPath(), [
+            'folder' => 'cars'
+        ]);
+        $validated['car_photo'] = $uploaded->getSecurePath();
+        $validated['car_photo_public_id'] = $uploaded->getPublicId(); // Simpan untuk delete nanti
 
         Car::create($validated);
 
@@ -73,11 +74,17 @@ class CarsController extends Controller
         $validated['price'] = $validated['price'] ?? 0;
 
         if ($request->hasFile('car_photo')) {
-            // Tidak perlu hapus file dari storage karena Cloudinary handle versinya
-            $uploadedUrl = Cloudinary::upload($request->file('car_photo')->getRealPath())->getSecurePath();
-            $validated['car_photo'] = $uploadedUrl;
+            // Hapus foto lama dari Cloudinary
+            if ($cars->car_photo_public_id) {
+                Cloudinary::destroy($cars->car_photo_public_id);
+            }
+        
+            $uploaded = Cloudinary::upload($request->file('car_photo')->getRealPath(), [
+                'folder' => 'cars'
+            ]);
+            $validated['car_photo'] = $uploaded->getSecurePath();
+            $validated['car_photo_public_id'] = $uploaded->getPublicId();
         }
-
         $cars->update($validated);
 
         return redirect()->route('cars.index')->with('success', 'Car updated successfully.');

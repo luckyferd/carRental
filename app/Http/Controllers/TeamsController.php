@@ -28,8 +28,14 @@ class TeamsController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $uploadedUrl = Cloudinary::upload($request->file('photo')->getRealPath())->getSecurePath();
-            $validated['photo'] = $uploadedUrl;
+            try {
+                $uploaded = Cloudinary::upload($request->file('photo')->getRealPath(), [
+                    'folder' => 'teams'
+                ]);
+                $validated['photo'] = $uploaded->getSecurePath(); // URL gambar
+            } catch (\Exception $e) {
+                return back()->withErrors(['photo' => 'Upload gagal: ' . $e->getMessage()]);
+            }
         }
 
         Team::create($validated);
@@ -60,9 +66,14 @@ class TeamsController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Tidak perlu hapus dari storage lokal karena Cloudinary urus file-nya sendiri
-            $uploadedUrl = Cloudinary::upload($request->file('photo')->getRealPath())->getSecurePath();
-            $validated['photo'] = $uploadedUrl;
+            try {
+                $uploaded = Cloudinary::upload($request->file('photo')->getRealPath(), [
+                    'folder' => 'teams'
+                ]);
+                $validated['photo'] = $uploaded->getSecurePath(); // URL gambar
+            } catch (\Exception $e) {
+                return back()->withErrors(['photo' => 'Upload gagal: ' . $e->getMessage()]);
+            }
         }
 
         $team->update($validated);

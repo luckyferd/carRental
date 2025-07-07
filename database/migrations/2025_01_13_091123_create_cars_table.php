@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->bigIncrements('cars_id');
+            $table->string('car_photo_public_id')->nullable();
             $table->string('cars_name', 50);
             $table->unsignedBigInteger('car_type');
             $table->foreign('car_type')

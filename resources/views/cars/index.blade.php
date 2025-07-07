@@ -1,12 +1,13 @@
 @extends('layouts.car')
 
 @section('card')
-@foreach ($cars as $car )
+@foreach ($cars as $car)
 <div class="col-lg-4 col-md-6 mb-2">
     <div class="rent-item mb-4">
-        <img class="img-fluid" src="{{ $cars->car_photo ?? asset('images/default-car.png') }}" alt="{{ $cars->cars_name }}">
+        <img class="img-fluid" src="{{ $car->car_photo ?? asset('images/default-car.png') }}" alt="{{ $car->cars_name }}">
 
-        <h4 class="text-uppercase mb-4">{{$car->cars_name}}</h4>
+        <h4 class="text-uppercase mb-4">{{ $car->cars_name }}</h4>
+
         <div class="d-flex justify-content-center mb-4">
             <div class="px-2">
                 <i class="fa fa-car text-primary mr-1"></i>
@@ -14,17 +15,19 @@
             </div>
             <div class="px-2 border-left border-right">
                 <i class="fa fa-cogs text-primary mr-1"></i>
-                <span>{{$car->car_status}}</span>
+                <span>{{ $car->car_status }}</span>
             </div>
             <div class="px-2">
                 <i class="fa fa-road text-primary mr-1"></i>
-                <span>{{$car->price}}</span>
+                <span>{{ $car->price }}</span>
             </div>
         </div>
-        <a href="{{ route('cars.show', $car->cars_id) }}" class="btn btn-primary px-3" href="">{{$car->price}}/Day</a>
+
+        <a href="{{ route('cars.show', $car->cars_id) }}" class="btn btn-primary px-3">{{ $car->price }}/Day</a>
     </div>
 </div>
 @endforeach
+
 @endsection
 
 @section('tableIndex')
