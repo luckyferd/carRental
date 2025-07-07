@@ -4,7 +4,8 @@
 @foreach ($cars as $car)
 <div class="col-lg-4 col-md-6 mb-2">
     <div class="rent-item mb-4">
-        <img class="img-fluid" src="{{ $cars->car_photo ?? asset('images/default-car.png') }}" alt="{{ $cars->cars_name }}">
+        <img class="img-fluid" src="{{ $car->car_photo ?? asset('images/default-car.png') }}" alt="{{ $car->cars_name }}">
+
 
         <h4 class="text-uppercase mb-4">{{ $car->cars_name }}</h4>
 
@@ -57,7 +58,8 @@
                 <td>{{ ucfirst($car->car_status) }}</td>
                 <td>
                     @if($car->car_photo)
-                    <img class="img-fluid" src="{{ $cars->car_photo ?? asset('images/default-car.png') }}" alt="{{ $cars->cars_name }}">
+                    <img class="img-fluid" src="{{ $car->car_photo ?? asset('images/default-car.png') }}" alt="{{ $car->cars_name }}" style="max-width: 100px;">
+
                     @else
                     <span>No Photo</span>
                     @endif

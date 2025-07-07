@@ -50,7 +50,7 @@
 @section('card')
 @foreach ($teams as $team)
 <div class="team-item">
-    <img id="preview" class="img-fluid mt-2" style="max-height: 200px; display: none;" />
+    <img src="{{ $team->photo }}" class="img-fluid mt-2" style="max-height: 200px;" alt="{{ $team->team_name }}">
     <div class="position-relative py-4">
         <h4 class="text-uppercase">{{ $team->team_name }}</h4>
         <p class="m-0">{{ $team->speciality }}</p>
