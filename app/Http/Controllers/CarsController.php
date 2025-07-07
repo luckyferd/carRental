@@ -31,19 +31,23 @@ class CarsController extends Controller
             'car_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'price' => 'nullable|numeric|min:0',
         ]);
-
+    
         $validated['price'] = $validated['price'] ?? 0;
-
-        $uploaded = Cloudinary::upload($request->file('car_photo')->getRealPath(), [
-            'folder' => 'cars'
-        ]);
-        $validated['car_photo'] = $uploaded->getSecurePath();
-        $validated['car_photo_public_id'] = $uploaded->getPublicId(); // Simpan untuk delete nanti
-
+    
+        if ($request->hasFile('car_photo')) {
+            $uploaded = Cloudinary::upload($request->file('car_photo')->getRealPath(), [
+                'folder' => 'cars'
+            ]);
+    
+            $validated['car_photo'] = $uploaded->getSecurePath();
+            $validated['car_photo_public_id'] = $uploaded->getPublicId(); // Simpan untuk delete nanti
+        }
+    
         Car::create($validated);
-
+    
         return redirect()->route('cars.index')->with('success', 'Car created successfully.');
     }
+    
 
     public function show(string $id)
     {

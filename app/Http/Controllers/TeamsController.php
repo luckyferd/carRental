@@ -20,28 +20,30 @@ class TeamsController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'team_name' => 'required|string|max:50',
-            'speciality' => 'required|string|max:50',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'team_name' => 'required|string|max:50',
+        'speciality' => 'required|string|max:50',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        if ($request->hasFile('photo')) {
-            try {
-                $uploaded = Cloudinary::upload($request->file('photo')->getRealPath(), [
-                    'folder' => 'teams'
-                ]);
-                $validated['photo'] = $uploaded->getSecurePath(); // URL gambar
-            } catch (\Exception $e) {
-                return back()->withErrors(['photo' => 'Upload gagal: ' . $e->getMessage()]);
-            }
+    if ($request->hasFile('photo')) {
+        try {
+            $uploaded = Cloudinary::upload($request->file('photo')->getRealPath(), [
+                'folder' => 'teams'
+            ]);
+            $validated['photo'] = $uploaded->getSecurePath(); // URL gambar
+            $validated['photo_public_id'] = $uploaded->getPublicId(); // ← ini penting untuk hapus nanti
+        } catch (\Exception $e) {
+            return back()->withErrors(['photo' => 'Upload gagal: ' . $e->getMessage()]);
         }
-
-        Team::create($validated);
-
-        return redirect()->route('teams.index')->with('success', 'Team created successfully.');
     }
+
+    Team::create($validated);
+
+    return redirect()->route('teams.index')->with('success', 'Team created successfully.');
+}
+
 
     public function show(string $id)
     {
@@ -58,26 +60,33 @@ class TeamsController extends Controller
     public function update(Request $request, string $id)
     {
         $team = Team::findOrFail($id);
-
+    
         $validated = $request->validate([
             'team_name' => 'required|string|max:50',
             'speciality' => 'required|string|max:50',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-
+    
         if ($request->hasFile('photo')) {
             try {
+                // Hapus foto lama jika ada public_id
+                if ($team->photo_public_id) {
+                    Cloudinary::destroy($team->photo_public_id);
+                }
+    
                 $uploaded = Cloudinary::upload($request->file('photo')->getRealPath(), [
                     'folder' => 'teams'
                 ]);
+    
                 $validated['photo'] = $uploaded->getSecurePath(); // URL gambar
+                $validated['photo_public_id'] = $uploaded->getPublicId(); // Simpan ID untuk penghapusan
             } catch (\Exception $e) {
                 return back()->withErrors(['photo' => 'Upload gagal: ' . $e->getMessage()]);
             }
         }
-
+    
         $team->update($validated);
-
+    
         return redirect()->route('teams.index')->with('success', 'Team updated successfully.');
     }
 

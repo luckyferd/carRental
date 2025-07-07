@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->bigIncrements('team_id');
+            $table->string('photo_public_id')->nullable()->after('photo');
             $table->string('team_name', 50);
             $table->string('speciality', 50);
             $table->string('photo')->nullable();
@@ -26,5 +27,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('teams');
+       
     }
 };
