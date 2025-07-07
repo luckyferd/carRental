@@ -101,12 +101,10 @@ class CarsController extends Controller
         if ($car->car_photo_public_id) {
             Cloudinary::destroy($car->car_photo_public_id);
         }
-        $car->delete();
-        $car->car_photo = null;
-        $car->car_photo_public_id = null;
-        $car->save();
     
-        return redirect()->back()->with('success', 'Foto berhasil dihapus.');
+        $car->delete(); // Hapus dari database
+        return redirect()->route('cars.index')->with('success', 'Mobil berhasil dihapus.');
     }
+    
     
 }
