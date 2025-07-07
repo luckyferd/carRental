@@ -50,9 +50,15 @@
         <div class="mb-3">
             <label for="car_photo" class="form-label">Car Photo</label>
             <input type="file" name="car_photo" class="form-control" id="car_photo">
+
+            {{-- Gambar lama --}}
             @if($cars->car_photo)
-                <img src="{{ asset('storage/' . $cars->car_photo) }}" alt="Car Photo" class="img-thumbnail mt-2" width="150">
+                <p class="mt-2">Current Photo:</p>
+                <img id="old-preview" class="img-fluid" src="{{ $cars->car_photo }}" alt="{{ $cars->cars_name }}" style="max-width: 200px;" />
             @endif
+
+            {{-- Preview baru --}}
+            <img id="preview" class="img-fluid mt-2" style="max-height: 200px; display: none;" />
         </div>
 
         <div class="mb-3">
@@ -63,4 +69,22 @@
         <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>
+
+{{-- Script preview --}}
+<script>
+    document.getElementById('car_photo').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('preview');
+        const oldPreview = document.getElementById('old-preview');
+
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            if (oldPreview) oldPreview.style.display = 'none';
+        } else {
+            preview.style.display = 'none';
+            if (oldPreview) oldPreview.style.display = 'block';
+        }
+    });
+</script>
 @endsection

@@ -27,7 +27,7 @@
                     <td>{{ $team->speciality }}</td>
                     <td>
                         @if($team->photo)
-                            <img src="{{ asset('storage/' . $team->photo) }}" alt="Team Photo" width="50" height="50" class="img-thumbnail">
+                        <img src="{{ $team->photo }}" alt="Foto Tim" style="max-width: 200px;" />
                         @else
                             No Photo
                         @endif

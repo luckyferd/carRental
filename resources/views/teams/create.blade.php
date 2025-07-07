@@ -29,10 +29,25 @@
 
         <div class="mb-3">
             <label for="photo" class="form-label">Photo</label>
+            <img id="preview" class="img-fluid mt-2" style="max-height: 200px; display: none;" />
+
             <input type="file" name="photo" class="form-control" id="photo">
         </div>
 
         <button type="submit" class="btn btn-success">Save</button>
     </form>
 </div>
+<script>
+    document.getElementById('photo').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('preview');
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+</script>
 @endsection
+

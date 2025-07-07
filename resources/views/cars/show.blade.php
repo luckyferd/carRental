@@ -5,7 +5,8 @@
     <div class="row">
         <div class="col-md-6">
             <!-- Foto mobil -->
-            <img class="img-fluid" src="{{ $cars->car_photo ? asset('storage/' . $cars->car_photo) : asset('images/default-car.png') }}" alt="{{ $cars->cars_name }}">
+            <img class="img-fluid" src="{{ $cars->car_photo ?? asset('images/default-car.png') }}" alt="{{ $cars->cars_name }}">
+
         </div>
         <div class="col-md-6">
             <!-- Detail mobil -->

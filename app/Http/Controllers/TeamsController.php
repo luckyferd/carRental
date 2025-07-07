@@ -4,30 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class TeamsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $teams = Team::all();
         return view('teams.index', compact('teams'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('teams.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,7 +28,8 @@ class TeamsController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('teams', 'public');
+            $uploadedUrl = Cloudinary::upload($request->file('photo')->getRealPath())->getSecurePath();
+            $validated['photo'] = $uploadedUrl;
         }
 
         Team::create($validated);
@@ -45,27 +37,18 @@ class TeamsController extends Controller
         return redirect()->route('teams.index')->with('success', 'Team created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $team = Team::findOrFail($id);
         return view('teams.show', compact('team'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $team = Team::findOrFail($id);
         return view('teams.edit', compact('team'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $team = Team::findOrFail($id);
@@ -77,10 +60,9 @@ class TeamsController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            if ($team->photo) {
-                Storage::disk('public')->delete($team->photo);
-            }
-            $validated['photo'] = $request->file('photo')->store('teams', 'public');
+            // Tidak perlu hapus dari storage lokal karena Cloudinary urus file-nya sendiri
+            $uploadedUrl = Cloudinary::upload($request->file('photo')->getRealPath())->getSecurePath();
+            $validated['photo'] = $uploadedUrl;
         }
 
         $team->update($validated);
@@ -88,17 +70,11 @@ class TeamsController extends Controller
         return redirect()->route('teams.index')->with('success', 'Team updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $team = Team::findOrFail($id);
 
-        if ($team->photo) {
-            Storage::disk('public')->delete($team->photo);
-        }
-
+        // Tidak perlu hapus dari Cloudinary kecuali kamu simpan public_id (bisa ditambahkan nanti)
         $team->delete();
 
         return redirect()->route('teams.index')->with('success', 'Team deleted successfully.');
