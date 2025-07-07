@@ -38,8 +38,8 @@ class ServiceOrdersController extends Controller
             'service_type'=>'required|exists:services,service_id',
             'service_date'=>'required|date',
             'service_time'=>'required|date_format:H:i',
-            'vehicle_name'=>'nullable',
-            'additional_notes'=>'nullable',
+            'vehicle_name'=>'required',
+            'additional_notes'=>'required|string|max:255',
             'payment_methods'=>'required|in:cash,qris,bank_transfer',
         ]);
 
