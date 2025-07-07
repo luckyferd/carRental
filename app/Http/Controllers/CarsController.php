@@ -101,7 +101,7 @@ class CarsController extends Controller
         if ($car->car_photo_public_id) {
             Cloudinary::destroy($car->car_photo_public_id);
         }
-    
+        $car->delete();
         $car->car_photo = null;
         $car->car_photo_public_id = null;
         $car->save();
