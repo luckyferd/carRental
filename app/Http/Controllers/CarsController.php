@@ -94,7 +94,7 @@ class CarsController extends Controller
         return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
     }
 
-    public function destroyPhoto($id)
+    public function destroy($id)
     {
         $car = Car::findOrFail($id);
     
